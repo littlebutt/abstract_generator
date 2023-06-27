@@ -1,0 +1,4 @@
+Pillow >= 9.5.0
+pyinstaller >= 5.13.0
+python-docx >= 0.8.11
+xlrd == 1.2.0
