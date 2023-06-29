@@ -1,3 +1,4 @@
+import os
 from typing import List, ClassVar
 
 
@@ -8,3 +9,4 @@ class Global:
     table_font_family: ClassVar[str] = u"仿宋"
     paragraph_font_size: int = 16
     table_font_size: int = 12
+    dst_path: ClassVar = os.getcwd()
