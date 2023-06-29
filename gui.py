@@ -1,9 +1,9 @@
-import os
 from tkinter import Tk, Entry, Button, Label, filedialog, messagebox, StringVar, Menu, Toplevel
 from typing import List
 
 from globals import Global
-from scanners import ExcelScanner, WordScanner
+from scanners import ExcelScanner
+from writer import WordWriter
 
 
 class Window:
@@ -115,7 +115,7 @@ class Window:
                 return
             Global.sheets = self.sheets_list_strs
             Global.excel_scanner = ExcelScanner(self.table_path)
-            word = WordScanner(self.template_path, Global.dst_path + r"/result.docx")
+            word = WordWriter(self.template_path, Global.dst_path + r"/result.docx")
             try:
                 word.scan()
             except Exception as e:
