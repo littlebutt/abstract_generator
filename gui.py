@@ -64,18 +64,18 @@ class Window:
         dialog.grab_set()
         dialog.protocol('WM_DELETE_WINDOW', lambda: dialog.destroy())
 
-        dst = Global.dst_path
+        self.dst = Global.dst_path
 
         def dst_btn_click():
-            dst = filedialog.askdirectory()
+            self.dst = filedialog.askdirectory()
             _txt = StringVar()
-            _txt.set(dst)
+            _txt.set(self.dst)
             dst_entry.config(textvariable=_txt)
 
         dst_lbl = Label(dialog, text=u"目标文件生成路径")
         dst_lbl.place(x=20, y=30)
         dst_entry = Entry(dialog)
-        dst_entry.insert(0, dst)
+        dst_entry.insert(0, self.dst)
         dst_entry.place(x=20, y=50, width=200, height=25)
         dst_btn = Button(dialog, text=u"浏览", command=dst_btn_click)
         dst_btn.place(x=220, y=50)
@@ -93,7 +93,7 @@ class Window:
         tab_font_entry.place(x=20, y=150, width=200, height=25)
 
         def ok_btn_click():
-            Global.dst_path = dst
+            Global.dst_path = self.dst
             Global.paragraph_font_size = int(para_font_entry.get()) if str(para_font_entry.get()).isdigit() else 16
             Global.table_font_size = int(tab_font_entry.get()) if str(tab_font_entry.get()).isdigit() else 12
             dialog.destroy()
