@@ -1,9 +1,15 @@
+import re
+
 from globals import Global
 
 
 class Func:
 
-    def run(self, *args, **kwargs):
+    def run(self, target: str) -> str:
+        pass
+
+    @classmethod
+    def match(cls, target: str) -> bool:
         pass
 
     @staticmethod
@@ -27,17 +33,23 @@ class SumFunc(Func):
     def __init__(self, excel_scanner: "ExcelScanner"):
         self.excel_scanner = excel_scanner
 
-    def run(self, *args, **kwargs):
-        if 'sheets' not in kwargs or 'col' not in kwargs or 'row' not in kwargs:
-            raise RuntimeError("Missing args when calling 'SUM' function")
+    def run(self, target: str) -> str:
+        target = target.strip()
+        target = target[3:]
+        target = target[1:-1]
+        row, col = target.split(',')
         res = 0.0
-        for sheet in kwargs['sheets']:
-            _data = self.excel_scanner.read(self.get_row_num(kwargs['row']), self.get_col_num(kwargs['col']), sheet)
+        for sheet in Global.sheets:
+            _data = self.excel_scanner.read(self.get_row_num(row.strip()), self.get_col_num(col.strip()), sheet)
             res += float(_data)
         if res.is_integer():
             return str(int(res))
         else:
             return '%.2f' % res
+
+    @classmethod
+    def match(cls, target: str) -> bool:
+        return re.match(r'SUM\(.*\)', target.strip()) is not None
 
 
 class NormFunc(Func):
@@ -45,12 +57,47 @@ class NormFunc(Func):
     def __init__(self, excel_scanner: "ExcelScanner"):
         self.excel_scanner = excel_scanner
 
-    def run(self, *args, **kwargs):
-        if 'col' not in kwargs or 'row' not in kwargs:
-            raise RuntimeError("Missing args when calling 'SUM' function")
-        sheet = kwargs['sheet'] if 'sheet' in kwargs else Global.sheets[-1]
-        res = self.excel_scanner.read(self.get_row_num(kwargs['row']), self.get_col_num(kwargs['col']), sheet)
+    def run(self, target: str) -> str:
+        target = target.strip()
+        target_list = target.split(',')
+        if len(target_list) == 2:
+            row, col = target_list
+            sheet = Global.sheets[-1]
+        elif len(target_list) == 3:
+            row, col, sheet = target_list
+        else:
+            raise RuntimeError("Poor Argument count in NormFunc")
+        res = self.excel_scanner.read(self.get_row_num(row.strip()), self.get_col_num(col.strip()), sheet.strip())
         if res.is_integer():
             return str(int(res))
         else:
             return '%.2f' % res
+
+    @classmethod
+    def match(cls, target: str) -> bool:
+        return True
+
+
+class AvgFunc(Func):
+
+    def __init__(self, excel_scanner: "ExcelScanner"):
+        self.excel_scanner = excel_scanner
+
+    def run(self, target: str) -> str:
+        target = target.strip()
+        target = target[3:]
+        target = target[1:-1]
+        row, col = target.split(',')
+        total = 0.0
+        for sheet in Global.sheets:
+            _data = self.excel_scanner.read(self.get_row_num(row.strip()), self.get_col_num(col.strip()), sheet)
+            total += float(_data)
+        retval = total / len(Global.sheets)
+        return '%.2f' % retval
+
+    @classmethod
+    def match(cls, target: str) -> bool:
+        return re.match(r'AVG\(.*\)', target.strip()) is not None
+
+
+

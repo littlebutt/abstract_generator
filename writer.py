@@ -14,33 +14,20 @@ class WordWriter:
     def __init__(self, path: str, dst: str):
         self.docx = docx.Document(path)
         self.name = dst
+        self.func_list = [SumFunc, funcs.AvgFunc, funcs.NormFunc]
 
     def call_func(self, matched):
         target = matched.group(1)
         target = target[1:-1]
-        if 'SUM' in target:
-            target = target.strip()
-            target = target[3:]
-            target = target[1:-1]
-            row, col = target.split(',')
-            sum = SumFunc(Global.excel_scanner)
-            return sum.run(row=row, col=col, sheets=Global.sheets)
-        else:
-            target = target.strip()
-            target_params = target.split(',')
-            if len(target_params) == 2:
-                row, col = target.split(',')
-                norm = funcs.NormFunc(Global.excel_scanner)
-                return norm.run(row=row, col=col)
-            elif len(target_params) == 3:
-                row, col, sheet = target.split(',')
-                norm = funcs.NormFunc(Global.excel_scanner)
-                return norm.run(row=row, col=col, sheet=sheet)
+        for func in self.func_list:
+            if func.match(target):
+                f = func(Global.excel_scanner)
+                return f.run(target)
 
     def scan(self):
         for paragraph in self.docx.paragraphs:
-            while re.search('\{.+}', paragraph.text):
-                res = re.sub('(\{.+?})', self.call_func, paragraph.text)
+            while re.search('{.+}', paragraph.text):
+                res = re.sub('({.+?})', self.call_func, paragraph.text)
                 paragraph.text = res
                 for run in paragraph.runs:
                     run.font.name = Global.paragraph_font_family
@@ -49,8 +36,8 @@ class WordWriter:
         for table in self.docx.tables:
             for row in table.rows:
                 for cell in row.cells:
-                    while re.search('\{.+}', cell.text):
-                        res = re.sub('(\{.+?})', self.call_func, cell.text)
+                    while re.search('{.+}', cell.text):
+                        res = re.sub('({.+?})', self.call_func, cell.text)
                         cell.text = res
                         for paragraph in cell.paragraphs:
                             for run in paragraph.runs:
