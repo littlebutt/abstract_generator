@@ -19,7 +19,7 @@
 |{row,col}|工作表列表内最后一张表中，行号为row，列号为col的数据|{2，C}|
 |{row,col,sheet_name}|sheet_name工作表中，行号为row，列号为col的数据|{2,C,Sheet1}|
 |{SUM(row,col)}|工作表列表内所有行号为row，列号为col的数据的总和|{SUM(5,B)}|
-|{AVG(row,col)}|工作表列表内所有行号为row，列号为col的数据的平均值，未实现|{AVG(5,B)}|
+|{AVG(row,col)}|工作表列表内所有行号为row，列号为col的数据的平均值|{AVG(5,B)}|
 |{MAX(row,col)}|工作表列表内所有行号为row，列号为col的数据的最大值，未实现|{MAX(5,B)}|
 |{MIN(row,col)}|工作表列表内所有行号为row，列号为col的数据的最小值，未实现|{MIN(5,B)}|
 |{CMP(row,col)}|工作表列表内最后一张表中，行号为row，列号为col的数据的环比增量（与前一张表相比），未实现|{CMP(5,B)}|
