@@ -100,4 +100,47 @@ class AvgFunc(Func):
         return re.match(r'AVG\(.*\)', target.strip()) is not None
 
 
+class MaxFunc(Func):
+
+    def __init__(self, excel_scanner: "ExcelScanner"):
+        self.excel_scanner = excel_scanner
+
+    def run(self, target: str) -> str:
+        target = target.strip()
+        target = target[3:]
+        target = target[1:-1]
+        row, col = target.split(',')
+        _max = 0.0
+        for sheet in Global.sheets:
+            _data = self.excel_scanner.read(self.get_row_num(row.strip()), self.get_col_num(col.strip()), sheet)
+            _max = max(_max, _data)
+        return '%.2f' % _max
+
+    @classmethod
+    def match(cls, target: str) -> bool:
+        return re.match(r'MAX\(.*\)', target.strip()) is not None
+
+
+class MinFunc(Func):
+
+    def __init__(self, excel_scanner: "ExcelScanner"):
+        self.excel_scanner = excel_scanner
+
+    def run(self, target: str) -> str:
+        target = target.strip()
+        target = target[3:]
+        target = target[1:-1]
+        row, col = target.split(',')
+        _min = 0.0
+        for sheet in Global.sheets:
+            _data = self.excel_scanner.read(self.get_row_num(row.strip()), self.get_col_num(col.strip()), sheet)
+            _min = min(_min, _data)
+        return '%.2f' % _min
+
+    @classmethod
+    def match(cls, target: str) -> bool:
+        return re.match(r'MIN\(.*\)', target.strip()) is not None
+
+
+
 

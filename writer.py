@@ -5,7 +5,6 @@ from docx.oxml.ns import qn
 from docx.shared import Pt
 
 import funcs
-from funcs import SumFunc
 from globals import Global
 
 
@@ -14,7 +13,7 @@ class WordWriter:
     def __init__(self, path: str, dst: str):
         self.docx = docx.Document(path)
         self.name = dst
-        self.func_list = [SumFunc, funcs.AvgFunc, funcs.NormFunc]
+        self.func_list = [funcs.SumFunc, funcs.AvgFunc, funcs.MaxFunc, funcs.MinFunc, funcs.NormFunc]
 
     def call_func(self, matched):
         target = matched.group(1)
